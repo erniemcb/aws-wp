@@ -1,4 +1,4 @@
-#Script to setup WP in aws
+#Various tools and scripts for cloud computing class
 Set the environment variables at the top of ths script to use setupwp.sh script.
 
 Set your Project ID and Bucket Name in restapi.php. Install composer, and run `composer install`.
