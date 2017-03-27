@@ -10,3 +10,7 @@ curl localhost/restapi.php/awolde/Amanu -X PUT
 curl localhost/restapi.php/awolde -X GET
 curl localhost/restapi.php/awolde -X DELETE
 ```
+
+restdb.php
+=============
+You need to install php-mysql library and create a databse with tablename tbl_users in Mysql. Populate the mysql details towards the end of the code.
