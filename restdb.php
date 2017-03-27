@@ -15,7 +15,7 @@ function post($request, $mysqli) {
         if ($mysqli->query($sql) === TRUE) {	 
           echo json_encode(array("username"=>$username,"action" => "created"));
         }
-	else echo $mysqli->error;
+	else { http_response_code(404); echo $mysqli->error; }
     }
   }
   else {
@@ -39,14 +39,16 @@ function deleter($request, $mysqli){
   }
 }
 
-$host='';
-$dbuser='';
-$dbpass='';
-$db='';
+$host='130.211.228.163';
+$dbuser='root';
+$dbpass='Bhoy8jFCxcAbFrsr';
+$db="uerdb";
 
 $mysqli = new mysqli($host, $dbuser, $dbpass, $db);
 if ($mysqli->connect_errno) {
-  echo "error connecting"; exit;
+  http_response_code(404);
+  echo "error connecting";
+  exit;
 }
 $method = $_SERVER['REQUEST_METHOD'];
 if (isset($_SERVER['PATH_INFO'])) {
