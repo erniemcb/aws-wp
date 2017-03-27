@@ -39,10 +39,10 @@ function deleter($request, $mysqli){
   }
 }
 
-$host='130.211.228.163';
-$dbuser='root';
-$dbpass='Bhoy8jFCxcAbFrsr';
-$db="uerdb";
+$host='';
+$dbuser='';
+$dbpass='';
+$db='';
 
 $mysqli = new mysqli($host, $dbuser, $dbpass, $db);
 if ($mysqli->connect_errno) {
