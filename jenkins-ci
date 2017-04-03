@@ -1,0 +1,28 @@
+whoami
+DOCKERS="10.128.0.6 10.128.0.7"
+DOCKER_MASTER="10.128.0.6"
+URL="http://EXT_IP_HERE/"
+mkdir src
+cp /tmp/index.php src/
+php -l src/*
+cat << EOF > Dockerfile
+FROM php:7.0-apache
+RUN docker-php-ext-install mysqli
+COPY src/ /var/www/html/
+EOF
+
+tar cfz build.tgz .
+for x in ${DOCKERS}
+do
+#  ssh -o StrictHostKeyChecking=no $x "docker images"
+scp build.tgz $x:
+ssh -o StrictHostKeyChecking=no $x "tar xfvz build.tgz"
+ssh -o StrictHostKeyChecking=no $x "docker build -t my-php-app:v-${BUILD_NUMBER} ."
+done
+#ssh 172.17.0.1 "docker exec container7 ping db2 -c4"
+#ssh 172.17.0.1 "docker exec container7 nc -w 1 -z db2 3306"
+#ssh 172.17.0.1 "~/cleanup.sh"
+#ssh 172.17.0.1 "docker run --network=isolated_nw -p 80:80 -itd --name php-app-v${BUILD_NUMBER} my-php-app"
+ssh -o StrictHostKeyChecking=no ${DOCKER_MASTER} "docker service update --image  my-php-app:v-${BUILD_NUMBER} my_web"
+#sleep 2
+curl -I $URL
