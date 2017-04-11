@@ -4,24 +4,24 @@ function post($request, $mysqli) {
   if (isset($request[0]) && isset($request[1])) {
     $username=$request[0];
     $fname=$request[1];
-    $sql="SELECT id from tbl_users where username='$username'"; 
+    $sql="SELECT id from tbl_users where username='$username'";
     $result = $mysqli->query($sql); echo $mysqli->error;
     if ($result->num_rows > 0) {
       echo "Object already exists!";
       http_response_code(404);
     }
-    else { 
+    else {
         $sql = "INSERT into tbl_users (username, firstname) VALUES ('$username', '$fname')";
-        if ($mysqli->query($sql) === TRUE) {	 
+        if ($mysqli->query($sql) === TRUE) {
           echo json_encode(array("username"=>$username,"action" => "created"));
         }
-	else { http_response_code(404); echo $mysqli->error; }
+    else { http_response_code(404); echo $mysqli->error; }
     }
   }
   else {
     echo "You need to set both username and firstname";
     http_response_code(404);
-  } 
+  }
 }
 
 function deleter($request, $mysqli){
@@ -39,17 +39,47 @@ function deleter($request, $mysqli){
   }
 }
 
-$host='';
-$dbuser='';
-$dbpass='';
-$db='';
+$host=$_ENV["DB_HOST"];
+$dbuser=$_ENV["DB_USER"];
+$dbpass=$_ENV["DB_PASS"];
+$db='users';
 
-$mysqli = new mysqli($host, $dbuser, $dbpass, $db);
+$mysqli = new mysqli($host, $dbuser, $dbpass);
 if ($mysqli->connect_errno) {
   http_response_code(404);
   echo "error connecting";
   exit;
 }
+
+
+//$mysqli->query("DROP DATABASE $db");
+if (!$mysqli->select_db($db))
+{
+  $sql = "CREATE DATABASE $db";
+  //$sql = "SHOW DATABASES";
+
+  if ($mysqli->query($sql) === TRUE) {
+    echo "Database created successfully";
+  } else {
+    echo "Error creating database: " . $mysqli->error;
+  }
+}
+
+$mysqli->close();
+$table='tbl_users';
+$mysqli = new mysqli($host, $dbuser, $dbpass, $db);
+if ( !$mysqli->query("SHOW TABLES LIKE '".$table."'")->num_rows ==1 ) {
+  $sql = "create table $table (
+    firstname VARCHAR(30) NOT NULL,
+    username VARCHAR(30) NOT NULL,
+    email VARCHAR(50),
+    reg_date TIMESTAMP ,
+    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY
+    )";
+  $mysqli->query($sql);
+  echo $mysqli->error; #if any
+}
+
 $method = $_SERVER['REQUEST_METHOD'];
 if (isset($_SERVER['PATH_INFO'])) {
   $request = explode('/', trim($_SERVER['PATH_INFO'],'/'));
