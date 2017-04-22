@@ -1,0 +1,19 @@
+docker service create --name registry --publish 5000:5000 registry:2
+docker run -it -d -p 9090:8080 -v /var/run/docker.sock:/var/run/docker.sock manomarks/visualizer
+docker-compose -f users.yml build
+docker-compose -f users.yml push
+docker stack deploy users --compose-file users.yml
+curl http://127.0.0.1:5000/v2/_catalog
+
+
+Jenkins
+docker build -t jenkins .
+docker run -p 8080:8080 --name my-ci jenkins
+
+#on the swarm manager
+sudo adduser jenkins
+sudo adduser jenkins docker
+sudo su - jenkins
+cat .ssh/id_rsa.pub > .ssh/authorized_keys
+docker cp .ssh my-ci:/var/lib/jenkins/
+docker exec -ti my-ci chown jenkins: /var/lib/jenkins/ -R
