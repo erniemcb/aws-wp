@@ -8,7 +8,7 @@ services:
         buildno: ${BUILD_NUMBER}
     image: ${REGISTRY_SLASH-127.0.0.1:5000}/php-rest:${BUILD_NUMBER-latest}
     depends_on:
-      - db
+      - db-staging
     environment:
       - DB_USER=root
       - DB_PASS=my-staging-pw
@@ -22,7 +22,7 @@ services:
     build: flaskui/
     image: ${REGISTRY_SLASH-127.0.0.1:5000}/webui:${BUILD_NUMBER-latest}
     depends_on:
-      - php-rest
+      - php-rest-staging
     deploy:
       replicas: 4
     ports:
