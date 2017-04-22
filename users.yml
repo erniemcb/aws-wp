@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  php-rest:
+    build:
+      context: ./php-rest
+      args:
+        buildno: ${BUILD_NUMBER}
+    image: ${REGISTRY_SLASH-127.0.0.1:5000}/php-rest:${BUILD_NUMBER-latest}
+    depends_on:
+      - db
+    environment:
+      - DB_USER=root
+      - DB_PASS=my-secret-pw
+      - DB_HOST=db
+    deploy:
+      replicas: 4
+    ports:
+    - "1010:80"
+
+  webui:
+    build: flaskui/
+    image: ${REGISTRY_SLASH-127.0.0.1:5000}/webui:${BUILD_NUMBER-latest}
+    depends_on:
+      - php-rest
+    deploy:
+      replicas: 4
+#      mode: global
+    ports:
+    - "80:8080"
+
+  db:
+    image: mysql
+  #  deploy:
+   #   mode: global
+    environment:
+      - MYSQL_ROOT_PASSWORD=my-secret-pw
+      

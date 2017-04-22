@@ -13,7 +13,7 @@ function post($request, $mysqli) {
     else {
         $sql = "INSERT into tbl_users (username, firstname) VALUES ('$username', '$fname')";
         if ($mysqli->query($sql) === TRUE) {
-          echo json_encode(array("username"=>$username,"action" => "created"));
+          echo json_encode(array("username"=>$username,"firstname"=>$fname,"action" => "created"));
         }
     else { http_response_code(404); echo $mysqli->error; }
     }
@@ -37,6 +37,20 @@ function deleter($request, $mysqli){
     echo "Object doesn't exist!";
     http_response_code(404);
   }
+}
+
+function get($request, $mysqli) {
+  $username=$request[0];
+  if ($username=='allusers') 
+    $sql="SELECT * from tbl_users";
+  else
+    $sql="SELECT * from tbl_users where username='$username'";
+  $result = $mysqli->query($sql); echo $mysqli->error;
+  $rows = array();
+  while($r = $result->fetch_array(MYSQLI_ASSOC)) {
+    $rows[] = $r;
+  }
+  echo json_encode($rows);
 }
 
 $host=$_ENV["DB_HOST"];
@@ -86,7 +100,7 @@ if (isset($_SERVER['PATH_INFO'])) {
 
   switch ($method) {
     case 'GET':
-      get($request, $bucket); break;
+      get($request, $mysqli); break;
     case 'PUT':
       put($request, $bucket); break;
     case 'POST':
