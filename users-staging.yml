@@ -16,7 +16,7 @@ services:
     deploy:
       replicas: 4
     ports:
-    - "1010:80"
+    - "1020:80"
 
   webui-staging:
     build: flaskui/
