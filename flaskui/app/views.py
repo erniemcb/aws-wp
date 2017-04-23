@@ -3,6 +3,7 @@ from flask import Flask, render_template, request
 from form import PostUserForm
 from list import ListAllUsers
 import requests
+import os
 
 #app = Flask(__name__)
 
@@ -14,7 +15,7 @@ def index():
 @app.route('/')
 @app.route('/form', methods=['GET','POST'])
 def form():
-  URL="http://php-rest/restdb.php"
+  URL=os.environ.get('PHP_REST_ENDPOINT')
   form = PostUserForm()
   if request.method == 'POST':
     try:
@@ -29,7 +30,8 @@ def form():
 
 @app.route('/list', methods=['GET', 'POST'])
 def list():
-  URL="http://php-rest/restdb.php"
+  URL=os.environ.get('PHP_REST_ENDPOINT')
+  #URL="http://php-rest/restdb.php"
   ListUsers = ListAllUsers()
   if request.method == 'POST':
     r = requests.get(URL+'/allusers')

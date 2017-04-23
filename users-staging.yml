@@ -12,7 +12,7 @@ services:
     environment:
       - DB_USER=root
       - DB_PASS=my-staging-pw
-      - DB_HOST=db
+      - DB_HOST=db-staging
     deploy:
       replicas: 4
     ports:
@@ -25,6 +25,8 @@ services:
       - php-rest-staging
     deploy:
       replicas: 4
+    environment:
+      - PHP_REST_ENDPOINT=http://php-rest-staging/restdb.php
     ports:
     - "8000:8080"
 
@@ -32,4 +34,3 @@ services:
     image: mysql
     environment:
       - MYSQL_ROOT_PASSWORD=my-staging-pw
-      
