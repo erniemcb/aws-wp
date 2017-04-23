@@ -1,20 +1,13 @@
 #Various tools and scripts for cloud computing class
-Set the environment variables at the top of ths script to use setupwp.sh script.
+Refer to individual readme files in each directory.
 
-flaskui
-=========
-UI for rest client written in python.
+The yml files are docker compose files that will create a 3-tier app -> UI, rest client and DB.
 
-Set your Project ID and Bucket Name in restapi.php. Install composer, and run `composer install`.
-Use curl to send GET, PUT, POST, DELETE requests.
-Example:
+These are the commands you need to set this up. You need to enable docker swarm mode have docker-compose installed.
 ```
-curl localhost/restapi.php/awolde/Aman -X POST
-curl localhost/restapi.php/awolde/Amanu -X PUT
-curl localhost/restapi.php/awolde -X GET
-curl localhost/restapi.php/awolde -X DELETE
+docker service create --name registry --publish 5000:5000 registry:2
+docker run -it -d -p 9090:8080 -v /var/run/docker.sock:/var/run/docker.sock manomarks/visualizer
+docker-compose -f users.yml build
+docker-compose -f users.yml push
+docker stack deploy users --compose-file users.yml
 ```
-
-restdb.php
-=============
-You need to install php-mysql library and create a databse with tablename tbl_users in Mysql. Populate the mysql details towards the end of the code.
