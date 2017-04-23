@@ -2,10 +2,7 @@ version: "3"
 
 services:
   php-rest:
-    build:
-      context: ./php-rest
-      args:
-        buildno: ${BUILD_NUMBER}
+    build: php-rest/
     image: ${REGISTRY_SLASH-127.0.0.1:5000}/php-rest:${BUILD_NUMBER-latest}
     depends_on:
       - db
@@ -25,14 +22,13 @@ services:
       - php-rest
     deploy:
       replicas: 4
-#      mode: global
+    environment:
+      - PHP_REST_ENDPOINT=http://php-rest/restdb.php
     ports:
     - "80:8080"
 
   db:
     image: mysql
-  #  deploy:
-   #   mode: global
     environment:
       - MYSQL_ROOT_PASSWORD=my-secret-pw
       
