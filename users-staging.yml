@@ -14,7 +14,7 @@ services:
       - DB_PASS=my-staging-pw
       - DB_HOST=db-staging
     deploy:
-      replicas: 4
+      replicas: 2
     ports:
     - "1020:80"
 
@@ -24,7 +24,7 @@ services:
     depends_on:
       - php-rest-staging
     deploy:
-      replicas: 4
+      replicas: 2
     environment:
       - PHP_REST_ENDPOINT=http://php-rest-staging/restdb.php
     ports:
