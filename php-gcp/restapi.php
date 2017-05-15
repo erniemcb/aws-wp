@@ -10,7 +10,7 @@ $storage = new StorageClient([ 'projectId' => PROJECTID ]);
 $bucket = $storage->bucket(BUCKETNAME);
 
 function post($request, $bucket) {
-  if (isset($request[0]) && isset($request[1])) {
+  if (isset($request[0]) && isset($request[1]) && isset($request[2]) {
     $filename=$request[1];
     $object = $bucket->object($filename);
     if ($object->exists()) {
@@ -19,7 +19,7 @@ function post($request, $bucket) {
     }
     else { 
       $file=fopen($filename,'w');
-      fwrite($file,"username: $request[0], firstname: $request[1]");
+      fwrite($file,"username: $request[0], firstname: $request[1], lastname: $request[2]");
       fclose($file);
       $result=$bucket->upload(fopen($filename,'r'));
       echo json_encode($result->info());
@@ -32,7 +32,7 @@ function post($request, $bucket) {
 }
 
 function get($request, $bucket) {
-  $filename=$request[0];
+  $filename=$request[1];
   $object = $bucket->object($filename);
   if ($object->exists()) {
     $content=$object->downloadAsString();
@@ -49,7 +49,7 @@ function get($request, $bucket) {
 }
 
 function put($request, $bucket) {
-  $filename=$request[0];
+  $filename=$request[1];
   $object = $bucket->object($filename);
   if ($object->exists()) {
     post($request,$bucket);
@@ -61,7 +61,7 @@ function put($request, $bucket) {
 }
 
 function deleter($request, $bucket){
-  $filename=$request[0];
+  $filename=$request[1];
   $object = $bucket->object($filename);
   if ($object->exists()) {
     $object->delete();
@@ -90,6 +90,6 @@ if (isset($_SERVER['PATH_INFO'])) {
   }
 }
 else {
-  echo "Nothing here, use http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'/username/firstname to use the API';
+  echo "Nothing here, use http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'/username/firstname/lastname to use the API';
 }
 ?>
