@@ -1,37 +1,40 @@
 <?php
 
 function post($request, $mysqli) {
-  if (isset($request[0]) && isset($request[1])) {
-    $username=$request[0];
-    $fname=$request[1];
-    $sql="SELECT id from tbl_users where username='$username'";
+  if (isset($request[0]) && isset($request[1]) && isset($request[2] && isset(request[3] && isset request[4]) {
+    $fname=$request[0];
+    $lname=$request[1];
+    $age=$request[2];
+    $email=$request[3];
+    $zip=$request[4];
+    $sql="SELECT id from tbl_users where lname='$lname'";
     $result = $mysqli->query($sql); echo $mysqli->error;
     if ($result->num_rows > 0) {
       echo "Object already exists!";
       http_response_code(404);
     }
     else {
-        $sql = "INSERT into tbl_users (username, firstname) VALUES ('$username', '$fname')";
+        $sql = "INSERT into tbl_users (firstname, lastname, age, email, zip) VALUES ('$fname', '$lname', '$age', '$email', '$zip')";
         if ($mysqli->query($sql) === TRUE) {
-          echo json_encode(array("username"=>$username,"firstname"=>$fname,"action" => "created"));
+          echo json_encode(array("firstname"=>$fname,"lastname"=>$lname,"age"=>$age, "email"=>$email, "zip"=>$zip, "action" => "created"));
         }
     else { http_response_code(404); echo $mysqli->error; }
     }
   }
   else {
-    echo "You need to set both username and firstname";
+    echo "You need to set firstname, lastname, age, email, and zip";
     http_response_code(404);
   }
 }
 
 function deleter($request, $mysqli){
-  $username=$request[0];
-  $sql="SELECT id from tbl_users where username='$username'";
+  $lname=$request[1];
+  $sql="SELECT id from tbl_users where lname='$lname'";
   $result = $mysqli->query($sql); echo $mysqli->error;
   if ($result->num_rows > 0) {
-    $sql = "DELETE from tbl_users where username='$username'";
+    $sql = "DELETE from tbl_users where lname='$lname'";
     $mysqli->query($sql); echo $mysqli->error;
-    echo json_encode(array("username"=>$username, "action"=>"deleted"));
+    echo json_encode(array("lastname"=>$lname, "action"=>"deleted"));
   }
   else {
     echo "Object doesn't exist!";
@@ -41,10 +44,10 @@ function deleter($request, $mysqli){
 
 function get($request, $mysqli) {
   $username=$request[0];
-  if ($username=='allusers') 
+  if ($fname=='allusers') 
     $sql="SELECT * from tbl_users";
   else
-    $sql="SELECT * from tbl_users where username='$username'";
+    $sql="SELECT * from tbl_users where lname='$lname'";
   $result = $mysqli->query($sql); echo $mysqli->error;
   $rows = array();
   while($r = $result->fetch_array(MYSQLI_ASSOC)) {
@@ -86,7 +89,9 @@ if ( !$mysqli->query("SHOW TABLES LIKE '".$table."'")->num_rows ==1 ) {
   $sql = "create table $table (
     firstname VARCHAR(30) NOT NULL,
     username VARCHAR(30) NOT NULL,
+    age VARCHAR(3) NOT NULL,
     email VARCHAR(50),
+    zip VARCHAR(6),
     reg_date TIMESTAMP ,
     id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY
     )";
@@ -110,6 +115,6 @@ if (isset($_SERVER['PATH_INFO'])) {
   }
 }
 else {
-  echo "Nothing here, use http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'/username/firstname to use the API';
+  echo "Nothing here, use http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'/fname/lname/age/email/zip to use the API';
 }
 ?>
