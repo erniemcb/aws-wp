@@ -11,7 +11,7 @@ $bucket = $storage->bucket(BUCKETNAME);
 
 function post($request, $bucket) {
   if (isset($request[0]) && isset($request[1])) {
-    $filename=$request[0];
+    $filename=$request[1];
     $object = $bucket->object($filename);
     if ($object->exists()) {
       echo "Object already exists!";
