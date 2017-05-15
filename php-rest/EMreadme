@@ -1,0 +1,2 @@
+To use this database, enter first name, last name, age, email, and zip code.
+To post, get, update, delete, etc. use curl and REST commands to access information
